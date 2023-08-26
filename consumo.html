@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>filtros y/o categorías disponibles</title>
+    <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA=" crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body>
+<div 
+
+class="container">
+<label for="lang">Categoria</label>
+<select name="categorias" id="categorias">
+</select>
+
+
+<label for="lang">Alcohol</label>
+<select name="Alcohol" id="Alcohol">  
+</select>
+
+<label for="lang">sin alcohol</label>
+<select name="sinalcohol" id="sinalcohol">  
+</select>
+
+
+<label for="lang">Letra inicial</label>
+<select name="inicial" id="inicial">
+    <option value="-1">Seleccione</option>
+    <option value="a">a</option>
+    <option value="b">b</option>
+    <option value="c">c</option>
+    <option value="d">d</option>
+    <option value="e">e</option>
+    <option value="f">f</option>
+    <option value="g">g</option>
+    <option value="h">h</option>
+    <option value="i">i</option>
+    <option value="j">j</option>
+    <option value="k">k</option>
+    <option value="l">l</option>
+    <option value="m">m</option>
+    <option value="n">n</option>
+    <option value="o">o</option>
+    <option value="p">p</option>
+    <option value="q">q</option>
+    <option value="r">r</option>
+    <option value="s">s</option>
+    <option value="t">t</option>
+    <option value="u">u</option>
+    <option value="v">v</option>
+    <option value="w">w</option>
+    <option value="x">x</option>
+    <option value="y">y</option>
+    <option value="z">z</option>
+    
+</select>
+
+
+<input type="button" onclick="buscar()" value="Buscar" />
+
+</div>
+
+
+
+   
+</body>
+<script>
+
+$( document ).ready(function() {
+    inicio();
+    alcohol();
+    sinalcohol();
+});
+
+
+
+function inicio (){
+    const Http = new XMLHttpRequest();
+    const url =  "https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list";
+    Http.open('GET',url)
+    Http.send();
+    Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+            var data = Http.responseText;
+           let clasificacion = JSON.parse(data)
+           $('#categorias').append('<option value="-1">Seleccione</option>');
+           let i = 0;
+             for (x of clasificacion['drinks']) {
+            // console.log(x.strCategory );
+            $('#categorias').append('<option value="' + i + '">' + x.strCategory+ '</option>');
+
+             }
+        }
+    }
+}
+
+
+function alcohol (){
+    const Http = new XMLHttpRequest();
+    const url =  "https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Alcoholic";
+    Http.open('GET',url)
+    Http.send();
+    Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+             data = Http.responseText;
+           let alcohol = JSON.parse(data)
+           $('#Alcohol').append('<option value="-1">Seleccione</option>');
+           let i = 0;
+             for (x of alcohol['drinks']) {
+             $('#Alcohol').append('<option value="' + i + '">' + x.strDrink+ '</option>');
+
+             }
+        }
+    }
+
+}
+
+
+function sinalcohol (){
+    const Http = new XMLHttpRequest();
+    const url =  "https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic";
+    Http.open('GET',url)
+    Http.send();
+    Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+             data = Http.responseText;
+           let alcohol = JSON.parse(data)
+           $('#sinalcohol').append('<option value="-1">Seleccione</option>');
+           let i = 0;
+             for (x of alcohol['drinks']) {
+             $('#sinalcohol').append('<option value="' + i + '">' + x.strDrink+ '</option>');
+
+             }
+        }
+    }
+
+}
+
+function buscar(){
+
+      var cat =  $('#categorias option:selected').text();
+      var alc =  $('#Alcohol option:selected').text();
+      var sin = $('#sinalcohol option:selected').text();
+      var inicial = $('#inicial option:selected').text();
+console.log(cat)
+      var filtros = 0;
+
+
+var pasofiltro = '';
+
+      if(cat!='Seleccione'){
+        filtros++;
+
+    
+    const Http = new XMLHttpRequest();
+    const url =  "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c="+cat;
+    Http.open('GET',url)
+    Http.send();
+    Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+            pasofiltro = Http.responseText;
+            console.log(pasofiltro)
+         
+        }
+    }
+
+      }
+
+      if(alc!='Seleccione'){
+        filtros++;
+
+        const Http = new XMLHttpRequest();
+         const url =  "https://www.thecocktaildb.com/api/json/v1/1/filter.php?c="+cat;
+        Http.open('GET',url)
+        Http.send();
+        Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+            pasofiltro = Http.responseText;
+            console.log(pasofiltro)
+         
+        }
+    }
+
+      }
+
+      if(sin!='Seleccione'){
+        const Http = new XMLHttpRequest();
+         const url =  " https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic";
+        Http.open('GET',url)
+        Http.send();
+        Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+            pasofiltro += Http.responseText;
+            console.log(pasofiltro)
+         
+        }
+    }
+
+       
+        filtros++;
+      }
+
+      if(inicial!='Seleccione'){
+        filtros++;
+        const Http = new XMLHttpRequest();
+         const url =  "https://www.thecocktaildb.com/api/json/v1/1/search.php?f="+inicial;
+        Http.open('GET',url)
+        Http.send();
+        Http.onreadystatechange= function(){
+        if(this.readyState==4 && this.status==200){
+            
+            pasofiltro += Http.responseText;
+            localStorage.setItem('rta',pasofiltro);
+            console.log(pasofiltro)
+         
+        }
+        
+      }
+    }
+
+      if(filtros>=2){
+//  console.log('--'+pasofiltro)
+// localStorage.setItem('rta',pasofiltro);
+// console.log(' rta = ',localStorage.getItem('rta'))
+window.location.href='ListarCocteles.html';
+
+      }else{
+          alert('debe seleccionar dos o mas filtros')
+      }
+    }
+
+</script>
+</html>
